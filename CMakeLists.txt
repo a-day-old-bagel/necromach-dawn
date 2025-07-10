@@ -34,6 +34,9 @@ cmake_minimum_required(VERSION 3.16)
 # - When upgrading to CMake 3.20 we can take advantage of the GENERATED property being global in
 #   DawnGenerator. We should also use the path utilities in dawn_install_target.
 
+# Use Zig as the toolchain, thank goodness.
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/toolchain.cmake")
+
 project(
     Dawn
     DESCRIPTION "Dawn, a WebGPU implementation"
