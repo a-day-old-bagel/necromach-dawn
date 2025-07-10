@@ -186,6 +186,7 @@ ResultOrError<UnpackedPtr<SurfaceDescriptor>> ValidateSurfaceDescriptor(
         }
 #endif  // defined(DAWN_USE_WAYLAND)
 #if defined(DAWN_USE_X11)
+<<<<<<< HEAD
         case wgpu::SType::SurfaceSourceXlibWindow: {
             auto* subDesc = descriptor.Get<SurfaceSourceXlibWindow>();
             DAWN_ASSERT(subDesc != nullptr);
@@ -195,6 +196,24 @@ ResultOrError<UnpackedPtr<SurfaceDescriptor>> ValidateSurfaceDescriptor(
             // X11 error handler exits the program on any error.
             const X11Functions* x11 = instance->GetOrLoadX11Functions();
             DAWN_INVALID_IF(!x11->IsX11Loaded(), "Couldn't load libX11.");
+=======
+    const SurfaceDescriptorFromXlibWindow* xDesc = nullptr;
+    FindInChain(descriptor->nextInChain, &xDesc);
+    if (xDesc) {
+        // Check the validity of the window by calling a getter function on the window that
+        // returns a status code. If the window is bad the call return a status of zero. We
+        // need to set a temporary X11 error handler while doing this because the default
+        // X11 error handler exits the program on any error.
+        const X11Functions* x11 = instance->GetOrLoadX11Functions();
+        DAWN_INVALID_IF(!x11->IsX11Loaded(), "Couldn't load libX11.");
+
+        XErrorHandler oldErrorHandler =
+            x11->xSetErrorHandler([](Display*, XErrorEvent*) { return 0; });
+        XWindowAttributes attributes;
+        int status = x11->xGetWindowAttributes(reinterpret_cast<Display*>(xDesc->display),
+                                               xDesc->window, &attributes);
+        x11->xSetErrorHandler(oldErrorHandler);
+>>>>>>> mach/main
 
             XErrorHandler oldErrorHandler =
                 x11->xSetErrorHandler([](Display*, XErrorEvent*) { return 0; });
