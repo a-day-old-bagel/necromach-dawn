@@ -35,7 +35,7 @@ cmake_minimum_required(VERSION 3.16)
 #   DawnGenerator. We should also use the path utilities in dawn_install_target.
 
 # Use Zig as the toolchain, thank goodness.
-set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/toolchain.cmake")
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/zig-toolchain.cmake")
 
 project(
     Dawn
