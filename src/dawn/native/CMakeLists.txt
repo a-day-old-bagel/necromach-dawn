@@ -904,7 +904,7 @@ if (DAWN_ENABLE_D3D12)
     if (DAWN_USE_BUILT_DXC)
         target_compile_definitions(dawn_native PRIVATE "DAWN_USE_BUILT_DXC")
         target_compile_definitions(dawn_native_objects PRIVATE "DAWN_USE_BUILT_DXC")
-        add_dependencies(dawn_native copy_dxil_dll)
+        # add_dependencies(dawn_native copy_dxil_dll) # necromach change - Not actually building DXC with Dawn, but letting it think so.
     endif()
 endif()
 
@@ -981,5 +981,5 @@ endif ()
 # They happen because dxcompiler is declared a shared library and bundle_libraries
 # doesn't work well with shared libs
 if (DAWN_USE_BUILT_DXC)
-    target_link_libraries(dawn_native PRIVATE dxcompiler)
+    # target_link_libraries(dawn_native PRIVATE dxcompiler) # necromach change - Not actually building DXC with Dawn, but letting it think so.
 endif()

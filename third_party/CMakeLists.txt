@@ -392,7 +392,7 @@ function(AddSubdirectoryDXC)
 endfunction()
 
 if (DAWN_USE_BUILT_DXC)
-    AddSubdirectoryDXC()
+    # AddSubdirectoryDXC() # necromach change - DXC build is fraught, build elsewhere and link manually
 endif()
 
 if (TINT_BUILD_TINTD)
