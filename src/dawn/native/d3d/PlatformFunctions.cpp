@@ -63,7 +63,7 @@ PlatformFunctions::~PlatformFunctions() = default;
 
 MaybeError PlatformFunctions::LoadFunctions() {
     DAWN_TRY(LoadDXGI());
-    DAWN_TRY(LoadFXCompiler());
+    // DAWN_TRY(LoadFXCompiler()); // necromach change - never FXC
     DAWN_TRY(LoadKernelBase());
     InitWindowsVersion();
     return {};
