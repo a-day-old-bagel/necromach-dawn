@@ -36,7 +36,7 @@
 
 #ifdef _WIN32
 #include <Windows.h>
-#include <atlbase.h>
+// #include <atlbase.h> // necromach change - Replace ATL usage with WRL
 #include <d3dcommon.h>
 #include <d3dcompiler.h>
 #include <wrl.h>
@@ -67,7 +67,7 @@ using PFN_DXC_CREATE_INSTANCE = HRESULT(__stdcall*)(REFCLSID rclsid,
 // positive: https://github.com/google/sanitizers/issues/911
 DAWN_NO_SANITIZE("undefined")
 HRESULT CallDxcCreateInstance(PFN_DXC_CREATE_INSTANCE dxc_create_instance,
-                              CComPtr<IDxcCompiler3>& dxc_compiler) {
+                              Microsoft::WRL::ComPtr<IDxcCompiler3>& dxc_compiler) {
     return dxc_create_instance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxc_compiler));
 }
 }  // namespace
@@ -111,44 +111,10 @@ Result ValidateUsingDXC(const std::string& dxc_path,
 
     HRESULT hr;
 
-    // Load the dll and get the DxcCreateInstance function
-    PFN_DXC_CREATE_INSTANCE dxc_create_instance = nullptr;
-#ifdef _WIN32
-    HMODULE dxcLib = LoadLibraryA(dxc_path.c_str());
-    if (dxcLib == nullptr) {
-        result.output = "Failed to load dxc: " + dxc_path;
-        result.failed = true;
-        return result;
-    }
-    // Avoid ASAN false positives when unloading DLL: https://github.com/google/sanitizers/issues/89
-#if !DAWN_ASAN_ENABLED()
-    TINT_DEFER({ FreeLibrary(dxcLib); });
-#endif
+    // necromach change - DXC is statically linked
+    PFN_DXC_CREATE_INSTANCE dxc_create_instance = &DxcCreateInstance;
 
-    dxc_create_instance =
-        reinterpret_cast<PFN_DXC_CREATE_INSTANCE>(GetProcAddress(dxcLib, "DxcCreateInstance"));
-#else
-    void* dxcLib = dlopen(dxc_path.c_str(), RTLD_LAZY | RTLD_GLOBAL | RTLD_NODELETE);
-    if (dxcLib == nullptr) {
-        result.output = "Failed to load dxc: " + dxc_path;
-        result.failed = true;
-        return result;
-    }
-    // Avoid ASAN false positives when unloading DLL: https://github.com/google/sanitizers/issues/89
-#if !DAWN_ASAN_ENABLED()
-    TINT_DEFER({ dlclose(dxcLib); });
-#endif
-
-    dxc_create_instance =
-        reinterpret_cast<PFN_DXC_CREATE_INSTANCE>(dlsym(dxcLib, "DxcCreateInstance"));
-#endif
-    if (dxc_create_instance == nullptr) {
-        result.output = "GetProcAccess failed";
-        result.failed = true;
-        return result;
-    }
-
-    CComPtr<IDxcCompiler3> dxc_compiler;
+    Microsoft::WRL::ComPtr<IDxcCompiler3> dxc_compiler;
     hr = CallDxcCreateInstance(dxc_create_instance, dxc_compiler);
     CHECK_HR(hr, "DxcCreateInstance failed");
 
@@ -192,7 +158,7 @@ Result ValidateUsingDXC(const std::string& dxc_path,
         source_buffer.Ptr = source.c_str();
         source_buffer.Size = source.length();
         source_buffer.Encoding = DXC_CP_UTF8;
-        CComPtr<IDxcResult> compile_result;
+        Microsoft::WRL::ComPtr<IDxcResult> compile_result;
         hr = dxc_compiler->Compile(&source_buffer, args.data(), static_cast<UINT32>(args.size()),
                                    nullptr, IID_PPV_ARGS(&compile_result));
         CHECK_HR(hr, "Compile call failed");
@@ -202,7 +168,7 @@ Result ValidateUsingDXC(const std::string& dxc_path,
         CHECK_HR(hr, "GetStatus call failed");
 
         if (FAILED(compile_status)) {
-            CComPtr<IDxcBlobEncoding> errors;
+            Microsoft::WRL::ComPtr<IDxcBlobEncoding> errors;
             hr = compile_result->GetErrorBuffer(&errors);
             CHECK_HR(hr, "GetErrorBuffer call failed");
             result.output = static_cast<char*>(errors->GetBufferPointer());
@@ -211,7 +177,7 @@ Result ValidateUsingDXC(const std::string& dxc_path,
         }
 
         // Compilation succeeded, get compiled shader blob and disassamble it
-        CComPtr<IDxcBlob> compiled_shader;
+        Microsoft::WRL::ComPtr<IDxcBlob> compiled_shader;
         hr = compile_result->GetResult(&compiled_shader);
         CHECK_HR(hr, "GetResult call failed");
 
@@ -219,11 +185,11 @@ Result ValidateUsingDXC(const std::string& dxc_path,
         compiled_shader_buffer.Ptr = compiled_shader->GetBufferPointer();
         compiled_shader_buffer.Size = compiled_shader->GetBufferSize();
         compiled_shader_buffer.Encoding = DXC_CP_UTF8;
-        CComPtr<IDxcResult> dis_result;
+        Microsoft::WRL::ComPtr<IDxcResult> dis_result;
         hr = dxc_compiler->Disassemble(&compiled_shader_buffer, IID_PPV_ARGS(&dis_result));
         CHECK_HR(hr, "Disassemble call failed");
 
-        CComPtr<IDxcBlobEncoding> disassembly;
+        Microsoft::WRL::ComPtr<IDxcBlobEncoding> disassembly;
         if ((dis_result != nullptr) && dis_result->HasOutput(DXC_OUT_DISASSEMBLY) &&
             SUCCEEDED(
                 dis_result->GetOutput(DXC_OUT_DISASSEMBLY, IID_PPV_ARGS(&disassembly), nullptr))) {
@@ -297,8 +263,8 @@ Result ValidateUsingFXC(const std::string& fxc_path,
         UINT compileFlags = D3DCOMPILE_OPTIMIZATION_LEVEL0 | D3DCOMPILE_PACK_MATRIX_ROW_MAJOR |
                             D3DCOMPILE_IEEE_STRICTNESS;
 
-        CComPtr<ID3DBlob> compiledShader;
-        CComPtr<ID3DBlob> errors;
+        Microsoft::WRL::ComPtr<ID3DBlob> compiledShader;
+        Microsoft::WRL::ComPtr<ID3DBlob> errors;
         HRESULT res = d3dCompile(source.c_str(),    // pSrcData
                                  source.length(),   // SrcDataSize
                                  nullptr,           // pSourceName
@@ -315,7 +281,7 @@ Result ValidateUsingFXC(const std::string& fxc_path,
             result.failed = true;
             return result;
         } else {
-            CComPtr<ID3DBlob> disassembly;
+            Microsoft::WRL::ComPtr<ID3DBlob> disassembly;
             res = d3dDisassemble(compiledShader->GetBufferPointer(),
                                  compiledShader->GetBufferSize(), 0, "", &disassembly);
             if (FAILED(res)) {
