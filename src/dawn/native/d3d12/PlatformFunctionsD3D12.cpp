@@ -46,7 +46,7 @@ MaybeError PlatformFunctions::LoadFunctions() {
     const std::string& pathToPrepend = modulePath.value_or("");
 
 #if DAWN_USE_BUILT_DXC
-    // LoadDXCLibraries(pathToPrepend); // necromach change - statically linked dxc
+    LoadDXCLibraries(pathToPrepend);
 #endif
     DAWN_TRY(LoadD3D12());
     DAWN_TRY(LoadD3D11());

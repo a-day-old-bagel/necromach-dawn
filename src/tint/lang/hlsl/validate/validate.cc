@@ -111,8 +111,46 @@ Result ValidateUsingDXC(const std::string& dxc_path,
 
     HRESULT hr;
 
-    // necromach change - DXC is statically linked
-    PFN_DXC_CREATE_INSTANCE dxc_create_instance = &DxcCreateInstance;
+
+
+
+    // Load the dll and get the DxcCreateInstance function
+    PFN_DXC_CREATE_INSTANCE dxc_create_instance = nullptr;
+#ifdef _WIN32
+    HMODULE dxcLib = LoadLibraryA(dxc_path.c_str());
+    if (dxcLib == nullptr) {
+        result.output = "Failed to load dxc: " + dxc_path;
+        result.failed = true;
+        return result;
+    }
+    // Avoid ASAN false positives when unloading DLL: https://github.com/google/sanitizers/issues/89
+#if !DAWN_ASAN_ENABLED()
+    TINT_DEFER({ FreeLibrary(dxcLib); });
+#endif
+    dxc_create_instance =
+        reinterpret_cast<PFN_DXC_CREATE_INSTANCE>(GetProcAddress(dxcLib, "DxcCreateInstance"));
+#else
+    void* dxcLib = dlopen(dxc_path.c_str(), RTLD_LAZY | RTLD_GLOBAL | RTLD_NODELETE);
+    if (dxcLib == nullptr) {
+        result.output = "Failed to load dxc: " + dxc_path;
+        result.failed = true;
+        return result;
+    }
+    // Avoid ASAN false positives when unloading DLL: https://github.com/google/sanitizers/issues/89
+#if !DAWN_ASAN_ENABLED()
+    TINT_DEFER({ dlclose(dxcLib); });
+#endif
+    dxc_create_instance =
+        reinterpret_cast<PFN_DXC_CREATE_INSTANCE>(dlsym(dxcLib, "DxcCreateInstance"));
+#endif
+    if (dxc_create_instance == nullptr) {
+        result.output = "GetProcAccess failed";
+        result.failed = true;
+        return result;
+    }
+
+
+    
 
     Microsoft::WRL::ComPtr<IDxcCompiler3> dxc_compiler;
     hr = CallDxcCreateInstance(dxc_create_instance, dxc_compiler);

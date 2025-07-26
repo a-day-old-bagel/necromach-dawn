@@ -79,7 +79,7 @@ class PlatformFunctions final : public d3d::PlatformFunctions {
     using PFN_DXC_CREATE_INSTANCE = HRESULT(WINAPI*)(REFCLSID rclsid,
                                                      REFIID riid,
                                                      _COM_Outptr_ void** ppCompiler);
-    PFN_DXC_CREATE_INSTANCE dxcCreateInstance = &DxcCreateInstance; // necromach change - statically linked default available
+    PFN_DXC_CREATE_INSTANCE dxcCreateInstance = nullptr;
 
   private:
     using Base = d3d::PlatformFunctions;
