@@ -121,7 +121,7 @@ struct InfiniteLoopTests : public DawnTestWithParams<InfiniteLoopTestParams> {
                  detail::Expectation* expectation);
 
 #define RUN_TEST(shader, inputs, numOutputs, expectation) \
-    this->RunTest(__FILE__, __LINE__, shader, inputs, numOutputs, expectation)
+    this->RunTest(__FILE_NAME__, __LINE__, shader, inputs, numOutputs, expectation)
 
     // Returns expression for the break condition.
     // It should always evaluate to false.

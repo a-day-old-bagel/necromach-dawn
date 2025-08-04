@@ -361,7 +361,7 @@ class TextureFormatTest : public DawnTest {
         // For floats use a special expectation that understands how to compare NaNs and support a
         // tolerance.
         if (customExpectation != nullptr) {
-            AddBufferExpectation(__FILE__, __LINE__, readbackBuffer, 0, expectedRenderDataSize,
+            AddBufferExpectation(__FILE_NAME__, __LINE__, readbackBuffer, 0, expectedRenderDataSize,
                                  customExpectation);
         } else {
             EXPECT_BUFFER_U32_RANGE_EQ(static_cast<const uint32_t*>(expectedRenderData),

@@ -66,11 +66,11 @@ MaybeError CheckError(const OpenGLFunctions& gl,
                       unsigned int line);
 
 #define DAWN_GL_TRY_ALWAYS_CHECK(gl, call)                      \
-    (ClearErrors(gl, __FILE__, __func__, __LINE__), (gl.call)); \
-    DAWN_TRY(CheckError(gl, "gl" #call, __FILE__, __func__, __LINE__))
+    (ClearErrors(gl, __FILE_NAME__, __func__, __LINE__), (gl.call)); \
+    DAWN_TRY(CheckError(gl, "gl" #call, __FILE_NAME__, __func__, __LINE__))
 #define DAWN_GL_TRY_ALWAYS_CHECK_IGNORE_ERRORS(gl, call)        \
-    (ClearErrors(gl, __FILE__, __func__, __LINE__), (gl.call)); \
-    IgnoreErrors(CheckError(gl, "gl" #call, __FILE__, __func__, __LINE__))
+    (ClearErrors(gl, __FILE_NAME__, __func__, __LINE__), (gl.call)); \
+    IgnoreErrors(CheckError(gl, "gl" #call, __FILE_NAME__, __func__, __LINE__))
 
 #if defined(DAWN_ENABLE_ASSERTS)
 #define DAWN_GL_TRY(gl, call) DAWN_GL_TRY_ALWAYS_CHECK(gl, call)

@@ -59,7 +59,7 @@
 // See PromiseInfo
 #define PROMISE_INFO                     \
     ::wgpu::interop::PromiseInfo {       \
-        __FILE__, __FUNCTION__, __LINE__ \
+        __FILE_NAME__, __FUNCTION__, __LINE__ \
     }
 
 namespace wgpu::interop {

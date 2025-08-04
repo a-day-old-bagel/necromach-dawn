@@ -115,11 +115,11 @@ void AssertGenerationIDsEqual(GenerationID a,
 #define TINT_ASSERT_GENERATION_IDS_EQUAL(a, b)                                                 \
     tint::detail::AssertGenerationIDsEqual(GenerationIDOf(a), GenerationIDOf(b), false,        \
                                            "TINT_ASSERT_GENERATION_IDS_EQUAL(" #a ", " #b ")", \
-                                           __FILE__, __LINE__)
+                                           __FILE_NAME__, __LINE__)
 #define TINT_ASSERT_GENERATION_IDS_EQUAL_IF_VALID(a, b) \
     tint::detail::AssertGenerationIDsEqual(             \
         GenerationIDOf(a), GenerationIDOf(b), true,     \
-        "TINT_ASSERT_GENERATION_IDS_EQUAL_IF_VALID(" #a ", " #b ")", __FILE__, __LINE__)
+        "TINT_ASSERT_GENERATION_IDS_EQUAL_IF_VALID(" #a ", " #b ")", __FILE_NAME__, __LINE__)
 #else
 #define TINT_ASSERT_GENERATION_IDS_EQUAL(a, b) \
     do {                                       \

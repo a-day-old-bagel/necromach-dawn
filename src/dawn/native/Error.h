@@ -111,7 +111,7 @@ struct IsResultOrError<ResultOrError<T>> {
 //     more clarity.
 
 #define DAWN_MAKE_ERROR(TYPE, MESSAGE) \
-    ::dawn::native::ErrorData::Create(TYPE, MESSAGE, __FILE__, __func__, __LINE__)
+    ::dawn::native::ErrorData::Create(TYPE, MESSAGE, __FILE_NAME__, __func__, __LINE__)
 
 #define DAWN_VALIDATION_ERROR(...) \
     DAWN_MAKE_ERROR(InternalErrorType::Validation, absl::StrFormat(__VA_ARGS__))
@@ -174,7 +174,7 @@ std::string MakeIncreaseLimitMessage(std::string_view limitName, T adapterLimitV
 // size in release. Most backtrace information useful to developers is already added via
 // DAWN_TRY_CONTEXT anyway.
 #if defined(DAWN_ENABLE_ASSERTS)
-#define DAWN_APPEND_ERROR_BACKTRACE(error) error->AppendBacktrace(__FILE__, __func__, __LINE__)
+#define DAWN_APPEND_ERROR_BACKTRACE(error) error->AppendBacktrace(__FILE_NAME__, __func__, __LINE__)
 #else  // defined(DAWN_ENABLE_ASSERTS)
 #define DAWN_APPEND_ERROR_BACKTRACE(error) \
     for (;;)                               \

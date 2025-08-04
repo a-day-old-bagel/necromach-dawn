@@ -96,7 +96,7 @@
 
 // Debug-only assert (similar to Chromium DCHECK).
 // In release, this provides optimization hints to the compiler.
-#define DAWN_ASSERT(condition) DAWN_ASSERT_CALLSITE_HELPER(__FILE__, __func__, __LINE__, condition)
+#define DAWN_ASSERT(condition) DAWN_ASSERT_CALLSITE_HELPER(__FILE_NAME__, __func__, __LINE__, condition)
 // Debug-only assert-false (similar to Chromium NOTREACHED).
 // In release, this provides optimization hints to the compiler.
 #define DAWN_UNREACHABLE()                                                 \
@@ -106,7 +106,7 @@
     } while (DAWN_ASSERT_LOOP_CONDITION)
 // Release-mode assert (similar to Chromium DAWN_CHECK).
 // First does a debug-mode assert for better a better debugging experience, then hard-aborts.
-#define DAWN_CHECK(condition) DAWN_CHECK_CALLSITE_HELPER(__FILE__, __func__, __LINE__, condition)
+#define DAWN_CHECK(condition) DAWN_CHECK_CALLSITE_HELPER(__FILE_NAME__, __func__, __LINE__, condition)
 
 namespace dawn {
 

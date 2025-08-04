@@ -1559,7 +1559,7 @@ TEST_F(ResolverDependencyGraphTraversalTest, SymbolsReached) {
     auto add_use = [&](const ast::Node* decl, auto use, int line, std::string_view kind) {
         symbol_uses.Push(SymbolUse{
             decl, IdentifierOf(use),
-            std::string(__FILE__) + ":" + std::to_string(line) + ": " + std::string(kind)});
+            std::string(__FILE_NAME__) + ":" + std::to_string(line) + ": " + std::string(kind)});
         return use;
     };
 

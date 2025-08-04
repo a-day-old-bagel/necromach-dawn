@@ -101,7 +101,7 @@ LogMessage ErrorLog();
 // DAWN_DEBUG is a helper macro that creates a DebugLog and outputs file/line/function
 // information
 LogMessage DebugLog(const char* file, const char* function, int line);
-#define DAWN_DEBUG() ::dawn::DebugLog(__FILE__, __func__, __LINE__)
+#define DAWN_DEBUG() ::dawn::DebugLog(__FILE_NAME__, __func__, __LINE__)
 
 }  // namespace dawn
 

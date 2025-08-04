@@ -71,7 +71,7 @@ struct SwitchMustMatchCase {
 /// ```
 #define TINT_ICE_ON_NO_MATCH      \
     ::tint::SwitchMustMatchCase { \
-        __FILE__, __LINE__        \
+        __FILE_NAME__, __LINE__        \
     }
 
 }  // namespace tint

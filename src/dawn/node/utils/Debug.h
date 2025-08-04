@@ -137,7 +137,7 @@ template <typename... MSG_ARGS>
 // LOG() prints the current file, line and function to stdout, followed by a
 // string representation of all the variadic arguments.
 #define LOG(...)                                                                                  \
-    ::wgpu::utils::Write(std::cout << __FILE__ << ":" << __LINE__ << " " << __FUNCTION__ << ": ", \
+    ::wgpu::utils::Write(std::cout << __FILE_NAME__ << ":" << __LINE__ << " " << __FUNCTION__ << ": ", \
                          __VA_ARGS__)                                                             \
         << "\n"
 
@@ -153,7 +153,7 @@ template <typename... MSG_ARGS>
 // The macro calls Fatal(), which is annotated with [[noreturn]].
 // Used to stub code that has not yet been implemented.
 #define UNREACHABLE(...) \
-    ::wgpu::utils::Fatal("UNREACHABLE", __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
+    ::wgpu::utils::Fatal("UNREACHABLE", __FILE_NAME__, __LINE__, __FUNCTION__, __VA_ARGS__)
 
 }  // namespace wgpu::utils
 

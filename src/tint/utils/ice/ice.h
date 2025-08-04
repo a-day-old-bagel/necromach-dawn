@@ -87,7 +87,7 @@ class InternalCompilerError {
 /// TINT_ICE() is a macro to invoke the InternalCompilerErrorReporter for an Internal Compiler
 /// Error. The ICE message contains the callsite's file and line. Use the `<<` operator to append an
 /// error message to the ICE.
-#define TINT_ICE() tint::InternalCompilerError(__FILE__, __LINE__)
+#define TINT_ICE() tint::InternalCompilerError(__FILE_NAME__, __LINE__)
 
 /// TINT_UNREACHABLE() is a macro invoke the InternalCompilerErrorReporter when an expectedly
 /// unreachable statement is reached. The ICE message contains the callsite's file and line. Use the

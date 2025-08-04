@@ -67,7 +67,7 @@
 // only be used in derivd class of DawnTestBase. Use "this" pointer to ensure the macro works with
 // CRTP.
 #define EXPECT_BUFFER(buffer, offset, size, expectation) \
-    this->AddBufferExpectation(__FILE__, __LINE__, buffer, offset, size, expectation)
+    this->AddBufferExpectation(__FILE_NAME__, __LINE__, buffer, offset, size, expectation)
 
 #define EXPECT_BUFFER_U8_EQ(expected, buffer, offset) \
     EXPECT_BUFFER(buffer, offset, sizeof(uint8_t), new ::dawn::detail::ExpectEq<uint8_t>(expected))
@@ -109,24 +109,24 @@
 
 // Test a pixel of the mip level 0 of a 2D texture.
 #define EXPECT_PIXEL_RGBA8_EQ(expected, texture, x, y) \
-    AddTextureExpectation(__FILE__, __LINE__, expected, texture, {x, y})
+    AddTextureExpectation(__FILE_NAME__, __LINE__, expected, texture, {x, y})
 
 #define EXPECT_PIXEL_FLOAT_EQ(expected, texture, x, y) \
-    AddTextureExpectation(__FILE__, __LINE__, expected, texture, {x, y})
+    AddTextureExpectation(__FILE_NAME__, __LINE__, expected, texture, {x, y})
 
 #define EXPECT_PIXEL_FLOAT16_EQ(expected, texture, x, y) \
-    AddTextureExpectation<float, uint16_t>(__FILE__, __LINE__, expected, texture, {x, y})
+    AddTextureExpectation<float, uint16_t>(__FILE_NAME__, __LINE__, expected, texture, {x, y})
 
 #define EXPECT_PIXEL_RGBA8_BETWEEN(color0, color1, texture, x, y) \
-    AddTextureBetweenColorsExpectation(__FILE__, __LINE__, color0, color1, texture, x, y)
+    AddTextureBetweenColorsExpectation(__FILE_NAME__, __LINE__, color0, color1, texture, x, y)
 
-#define EXPECT_TEXTURE_EQ(...) AddTextureExpectation(__FILE__, __LINE__, __VA_ARGS__)
+#define EXPECT_TEXTURE_EQ(...) AddTextureExpectation(__FILE_NAME__, __LINE__, __VA_ARGS__)
 
 #define EXPECT_TEXTURE_FLOAT16_EQ(...) \
-    AddTextureExpectation<float, uint16_t>(__FILE__, __LINE__, __VA_ARGS__)
+    AddTextureExpectation<float, uint16_t>(__FILE_NAME__, __LINE__, __VA_ARGS__)
 
 #define EXPECT_TEXTURE_SNORM_BETWEEN(...) \
-    AddSnormTextureBoundsExpectation<int8_t>(__FILE__, __LINE__, __VA_ARGS__)
+    AddSnormTextureBoundsExpectation<int8_t>(__FILE_NAME__, __LINE__, __VA_ARGS__)
 
 // Matcher for C++ types to verify that their internal C-handles are identical.
 MATCHER_P(CHandleIs, cType, "") {
